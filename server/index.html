@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Ma page test</title>
+    <script type="text/javascript">
+
+        scriptLoaded = false
+        function divClicked(e) {
+            body = document.getElementById("dest")
+            if (!scriptLoaded) {
+                app = document.createElement("app-root")
+                app.id = Math.random()
+                body.append(app)
+                loadScript("dist/angular-app/runtime.js")
+                loadScript("dist/angular-app/polyfills.js")
+                loadScript("dist/angular-app/main.js")
+                scriptLoaded = true
+            }
+
+            setTimeout(() => {
+
+                el = document.createElement("popup-element")
+                el.id = Math.random()
+                el.message = "Hello "+el.id
+                body.append(el)
+            }, 500)
+
+            console.log("Div clicked", body, window)
+        }
+
+        function loadScript(url) {
+            var script = document.createElement('script');
+            script.onload = function () {
+                console.log("Script loaded", url)
+            };
+            script.src = url;
+
+            document.head.appendChild(script);
+        }
+        document.addEventListener('cat', (e) => {
+            console.log("Event received", e)
+        })
+        document.addEventListener("DOMContentLoaded", (ev) => {
+            console.log("Doc loaded")
+            payload = document.getElementById("postPayload")
+            payload.addEventListener("click", () => {
+                console.log("Clicked")
+                event = new CustomEvent("cat", {
+                    detail: {
+                        hazcheeseburger: true,
+                        payload: payload
+                    }
+                })
+                document.dispatchEvent(event)
+            })
+        })
+
+
+    </script>
+</head>
+
+<body id="dest">
+    <p id="postPayload">Voici ma page web</p>
+    <div onclick="divClicked()">Click here to add more component!</div>
+    <popup-element message="Use Angular!"></popup-element>
+</body>
+
+</html>
